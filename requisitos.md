@@ -1201,6 +1201,4 @@ RN-005 (Limite de Vídeos no Portfólio)
 RF-002 (Gestão de Portfólio)
 ```
 
----
 
-*Documento gerado em 31/08/2026 — Versão 1.0 (MVP)*
