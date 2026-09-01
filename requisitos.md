@@ -1,5 +1,5 @@
 # Regras de Negócio e Requisitos de Software
-Alunos: Vitor Teodoro Correa (ra143757) e Arthur Spirandelli (ra...)
+Alunos: Vitor Teodoro Correa (ra143757) e Arthur Spirandelli (ra144136)
 
 ## Fluxo de evolução
 
