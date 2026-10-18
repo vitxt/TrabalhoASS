@@ -1,0 +1,126 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+skinparam roundCorner 10
+
+skinparam sequence {
+    ArrowColor #2563EB
+    ActorBorderColor #2563EB
+    ActorBackgroundColor #EFF6FF
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #F1F5F9
+    ParticipantBorderColor #1E40AF
+    ParticipantBackgroundColor #F8FAFC
+}
+
+autonumber
+
+actor "Contratante\n(Empresa)" as Contratante
+actor "Contratado\n(Influenciador)" as Contratado
+participant "Sistema\n(Plataforma)" as Sistema
+participant "Serviço de Notificações\n(Abstração Conceitual)" as Notificacao
+participant "Gateway de Pagamentos\n(Custódia / Escrow)" as Gateway
+actor "Suporte Técnico\n(Mediação)" as Suporte
+
+== 1. Formalização Contratual Digital (RF-007, RN-004) ==
+
+Contratante -> Sistema: Iniciar contratação do criador selecionado
+activate Sistema
+Sistema -> Sistema: Gerar minuta contratual digital\n(escopo, valores e cláusula LGPD/cessão de imagem)
+Sistema --> Contratante: Apresentar contrato para conferência
+Contratante -> Sistema: Assinar digitalmente os termos do contrato
+Sistema -> Notificacao: Disparar notificação de contrato para aceite
+deactivate Sistema
+
+activate Notificacao
+Notificacao -> Contratado: Notificar proposta e contrato pendente de assinatura
+deactivate Notificacao
+
+Contratado -> Sistema: Acessar minuta e assinar digitalmente com consentimento
+activate Sistema
+Sistema -> Sistema: Registrar assinaturas com timestamp e hash indelével
+Sistema --> Contratante: Notificar contrato formalizado e solicitar aporte financeiro
+deactivate Sistema
+
+== 2. Aporte Financeiro em Custódia Escrow (RF-008, RN-002) ==
+
+Contratante -> Sistema: Realizar pagamento do valor bruto acordado (PIX/Cartão)
+activate Sistema
+Sistema -> Gateway: Solicitar cobrança e retenção preventiva em garantia
+activate Gateway
+Gateway -> Gateway: Processar transação e bloquear fundos em custódia (Escrow)
+Gateway --> Sistema: Confirmar aporte financeiro retido com sucesso
+deactivate Gateway
+
+Sistema -> Sistema: Atualizar status do contrato para "Em Andamento (Pago em Escrow)"
+Sistema -> Notificacao: Notificar início autorizado da produção
+deactivate Sistema
+
+activate Notificacao
+Notificacao -> Contratado: Alertar garantia financeira retida; liberar início da criação
+deactivate Notificacao
+
+== 3. Entrega e Avaliação do Conteúdo (RF-009, RN-002) ==
+
+Contratado -> Sistema: Submeter material publicitário finalizado (upload/links)
+activate Sistema
+Sistema -> Sistema: Alterar status para "Em Avaliação" e iniciar temporizador (5 dias úteis)
+Sistema -> Notificacao: Notificar contratante sobre material disponível
+deactivate Sistema
+
+activate Notificacao
+Notificacao -> Contratante: Alertar sobre entrega realizada e prazo limite de 5 dias úteis
+deactivate Notificacao
+
+== 4. Homologação e Liquidação Financeira ==
+
+alt Cenário Principal: Aprovação Formal pelo Contratante
+    Contratante -> Sistema: Revisar e aprovar formalmente o material entregue
+    activate Sistema
+    Sistema -> Sistema: Calcular taxa de comissão da plataforma: 12,5% (RN-001)
+    Sistema -> Sistema: Calcular valor líquido do criador: (Bruto - 12,5%)
+    Sistema -> Gateway: Comandar liquidação financeira da custódia (RF-011)
+    activate Gateway
+    Gateway -> Contratado: Transferir valor líquido para conta/PIX do criador
+    Gateway -> Sistema: Creditar 12,5% na conta institucional da Plataforma
+    Gateway --> Sistema: Confirmar liquidação bancária concluída
+    deactivate Gateway
+    Sistema -> Sistema: Atualizar status para "Contrato Concluído"
+    Sistema -> Notificacao: Notificar conclusão e liberar formulário de avaliação mútua (RF-010)
+    deactivate Sistema
+    activate Notificacao
+    Notificacao -> Contratante: Confirmar conclusão e solicitar avaliação do criador
+    Notificacao -> Contratado: Confirmar depósito e solicitar avaliação da empresa
+    deactivate Notificacao
+
+else Cenário Alternativo 1: Aprovação Tácita por Decurso de Prazo (5 dias úteis - RN-002)
+    Sistema -> Sistema: Temporizador de 5 dias úteis expira sem manifestação do contratante
+    activate Sistema
+    Sistema -> Sistema: Executar aprovação tácita automática do conteúdo
+    Sistema -> Gateway: Comandar liquidação financeira automática ao criador
+    activate Gateway
+    Gateway -> Contratado: Transferir valor líquido (Bruto - 12,5%)
+    Gateway --> Sistema: Confirmação de repasse
+    deactivate Gateway
+    Sistema -> Sistema: Atualizar status para "Contrato Concluído (Tácito)"
+    deactivate Sistema
+
+else Cenário Alternativo 2: Recusa e Abertura de Disputa (RF-012, RN-003)
+    Contratante -> Sistema: Recusar material e protocolar abertura de disputa
+    activate Sistema
+    Sistema -> Sistema: Congelar imediatamente repasses do contrato
+    Sistema -> Gateway: Sinalizar bloqueio de segurança na custódia
+    Sistema -> Suporte: Abrir chamado com histórico, briefing e evidências
+    deactivate Sistema
+    activate Suporte
+    Suporte -> Suporte: Arbitrar conflito e emitir laudo de mediação em até 7 dias corridos
+    Suporte -> Sistema: Determinar resolução (estorno à empresa ou liberação ao criador)
+    deactivate Suporte
+    activate Sistema
+    Sistema -> Gateway: Executar comando financeiro conforme laudo
+    Sistema -> Sistema: Atualizar status para "Encerrado por Disputa"
+    deactivate Sistema
+end
+
+@enduml

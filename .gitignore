@@ -1,0 +1,8 @@
+# Ignorar tudo por padrao
+/*
+
+# Permitir apenas README.md e o diretorio docs
+!/README.md
+!/docs/
+!/docs/**
+!.gitignore

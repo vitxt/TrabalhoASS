@@ -1,0 +1,89 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam handwritten false
+skinparam defaultFontName Arial
+skinparam roundCorner 10
+
+skinparam actor {
+    BackgroundColor #EFF6FF
+    BorderColor #2563EB
+}
+
+skinparam usecase {
+    BackgroundColor #F8FAFC
+    BorderColor #1E40AF
+    ArrowColor #334155
+}
+
+skinparam package {
+    BackgroundColor #FAFAFA
+    BorderColor #94A3B8
+}
+
+left to right direction
+
+actor "Contratado\n(Influenciador)" as Contratado
+actor "Contratante\n(Empresa)" as Contratante
+actor "Suporte Técnico\n(Mediação)" as Suporte
+actor "<<external>>\nGateway de Pagamentos" as Gateway
+
+rectangle "Plataforma de Intermediação de Influenciadores" {
+
+    package "Gestão de Acesso e Perfis" {
+        usecase "UC-001: Cadastrar e\nAutenticar Contratado" as UC01
+        usecase "UC-002: Gerenciar Portfólio\nProfissional (RN-005)" as UC02
+        usecase "UC-003: Cadastrar e\nAutenticar Contratante" as UC03
+        usecase "UC-006: Explorar Perfis\ne Iniciar Contato" as UC06
+    }
+
+    package "Campanhas e Oportunidades" {
+        usecase "UC-004: Publicar e Gerenciar\nVaga de Campanha" as UC04
+        usecase "UC-005: Consultar Vagas\ne Candidatar-se" as UC05
+    }
+
+    package "Contratação e Custódia Financeira" {
+        usecase "UC-007: Formalizar e Assinar\nContrato Digital (RN-004)" as UC07
+        usecase "UC-008: Realizar Pagamento\nem Custódia (Escrow - RN-002)" as UC08
+    }
+
+    package "Execução, Entrega e Encerramento" {
+        usecase "UC-009: Entregar e\nAvaliar Conteúdo" as UC09
+        usecase "UC-011: Liberar Pagamento e\nDeduzir Comissão (RN-001)" as UC11
+        usecase "UC-010: Realizar Avaliação\nMútua de Reputação" as UC10
+        usecase "UC-012: Abrir Disputa\ne Solicitar Reembolso (RN-003)" as UC12
+        usecase "Aprovação Tácita por\nDecurso de Prazo (RN-002)" as UCAprovTacita
+    }
+}
+
+' Relacionamentos do Contratado
+Contratado --> UC01
+Contratado --> UC02
+Contratado --> UC05
+Contratado --> UC07
+Contratado --> UC09
+Contratado --> UC10
+Contratado --> UC12
+
+' Relacionamentos do Contratante
+Contratante --> UC03
+Contratante --> UC04
+Contratante --> UC06
+Contratante --> UC07
+Contratante --> UC08
+Contratante --> UC09
+Contratante --> UC10
+Contratante --> UC12
+
+' Relacionamentos de Suporte e Gateway
+Suporte --> UC12
+UC08 --> Gateway
+UC11 --> Gateway
+UC12 --> Gateway
+
+' Inclusões e Extensões
+UC09 <.. UCAprovTacita : <<extend>>
+UC09 <.. UC12 : <<extend>>
+UC09 ..> UC11 : <<trigger>>
+UC08 .> UC07 : <<precedes>>
+
+@enduml
