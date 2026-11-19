@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InfluencerMatch - Plataforma de Marketplace e Contratação</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">IM</div>
+      <div>
+        <h1>InfluencerMatch Brasil</h1>
+        <span>Plataforma de Conexão Influenciadores & Empresas • UEM ASS</span>
+      </div>
+    </div>
+
+    <div class="user-selector-bar">
+      <div>
+        <label style="font-size: 0.75rem; color: var(--text-muted); display: block; font-weight: 600;">SIMULAR USUÁRIO ATIVO:</label>
+        <select id="userSelector" class="user-select">
+          <!-- Populado via JS -->
+        </select>
+      </div>
+      <div id="currentUserBadge" class="role-badge badge-contratante">
+        Contratante
+      </div>
+    </div>
+  </header>
+
+  <!-- Abas de Navegação -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="campanhas">
+      📢 Vagas & Campanhas <span id="badgeCampanhasCount" class="counter">0</span>
+    </button>
+    <button class="tab-btn" data-tab="criadores">
+      🌟 Catálogo de Criadores <span id="badgeCriadoresCount" class="counter">0</span>
+    </button>
+    <button class="tab-btn" data-tab="contratos">
+      📑 Contratos & Custódia Escrow <span id="badgeContratosCount" class="counter">0</span>
+    </button>
+    <button class="tab-btn" data-tab="disputas">
+      ⚖️ Suporte & Disputas <span id="badgeDisputasCount" class="counter">0</span>
+    </button>
+    <button class="tab-btn" data-tab="metricas">
+      📊 Governança Financeira
+    </button>
+  </nav>
+
+  <!-- Conteúdo Principal -->
+  <main>
+
+    <!-- Linha de Métricas Rápidas -->
+    <div class="metrics-row" id="quickMetricsBar">
+      <div class="metric-card">
+        <span class="title">Retenção em Custódia (Escrow)</span>
+        <span class="value" id="statEscrowLocked">R$ 0,00</span>
+        <span class="desc">Fundos garantidos sob a regra RN-002</span>
+      </div>
+      <div class="metric-card">
+        <span class="title">Taxa da Plataforma Recolhida</span>
+        <span class="value" id="statPlatformFees">R$ 0,00</span>
+        <span class="desc">Comissão de 12,5% faturada (RN-001)</span>
+      </div>
+      <div class="metric-card">
+        <span class="title">Volume Bruto Transacionado</span>
+        <span class="value" id="statVolumeGross">R$ 0,00</span>
+        <span class="desc">Total de contratos formalizados</span>
+      </div>
+      <div class="metric-card">
+        <span class="title">Repassado aos Criadores</span>
+        <span class="value" id="statPaidCreators">R$ 0,00</span>
+        <span class="desc">Valor líquido transferido após aprovação</span>
+      </div>
+    </div>
+
+    <!-- TAB 1: CAMPANHAS -->
+    <section id="tab-campanhas" class="tab-content">
+      <div class="section-header">
+        <div>
+          <h2>Mural de Oportunidades & Campanhas</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Vagas abertas para produção de conteúdo publicitário com comissão e garantia escrow.
+          </p>
+        </div>
+        <div class="filter-group">
+          <select id="filterCampanhasNiche" class="user-select">
+            <option value="">Todos os Nichos</option>
+            <option value="Tecnologia">Tecnologia / Hardware</option>
+            <option value="Games">Games & Lifestyle</option>
+            <option value="Moda">Moda & Beleza</option>
+          </select>
+          <button id="btnOpenNewCampaignModal" class="btn btn-primary" style="display: none;">
+            + Publicar Vaga (RF-004)
+          </button>
+        </div>
+      </div>
+
+      <div id="campaignsGrid" class="cards-grid">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </section>
+
+    <!-- TAB 2: CATÁLOGO DE CRIADORES -->
+    <section id="tab-criadores" class="tab-content" style="display: none;">
+      <div class="section-header">
+        <div>
+          <h2>Catálogo de Criadores de Conteúdo & Portfólios</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Busca ativa de influenciadores qualificados (RF-006, RN-005 com limite de 5 vídeos).
+          </p>
+        </div>
+        <div class="filter-group">
+          <input type="text" id="searchCreatorInput" class="form-control" placeholder="Buscar por nome ou nicho..." style="width: 250px;">
+          <button id="btnAddPortfolioItemBtn" class="btn btn-primary" style="display: none;">
+            + Adicionar ao Meu Portfólio (RF-002)
+          </button>
+        </div>
+      </div>
+
+      <div id="creatorsGrid" class="cards-grid">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </section>
+
+    <!-- TAB 3: CONTRATOS & ESCROW -->
+    <section id="tab-contratos" class="tab-content" style="display: none;">
+      <div class="section-header">
+        <div>
+          <h2>Gestão de Contratos Digitais & Custódia Escrow</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Ciclo de vida contratual: Minuta, Assinatura LGPD (RN-004), Pagamento em Custódia (RN-002), Homologação e Repasse Líquido (RN-001).
+          </p>
+        </div>
+      </div>
+
+      <div id="contractsList" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </section>
+
+    <!-- TAB 4: DISPUTAS & SUPORTE -->
+    <section id="tab-disputas" class="tab-content" style="display: none;">
+      <div class="section-header">
+        <div>
+          <h2>Central de Mediação de Disputas & Suporte Técnico</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Arbitragem de conflitos e cancelamentos com prazos de até 7 dias úteis (RF-012, RN-003).
+          </p>
+        </div>
+      </div>
+
+      <div id="disputesList" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </section>
+
+    <!-- TAB 5: MÉTRICAS & GOVERNANÇA -->
+    <section id="tab-metricas" class="tab-content" style="display: none;">
+      <div class="section-header">
+        <div>
+          <h2>Painel de Governança, Transparência & Regras de Negócio</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Verificação em tempo real da aplicação das diretrizes financeiras e operacionais da plataforma.
+          </p>
+        </div>
+      </div>
+
+      <div style="background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem;">
+        <h3 style="margin-bottom: 1rem; color: #1e3a8a;">Regras de Negócio Implementadas na Arquitetura:</h3>
+        <ul style="line-height: 1.8; margin-left: 1.5rem; color: #334155;">
+          <li><strong>RN-001 (Comissão de 12,5%):</strong> Deduzida compulsoriamente no fechamento e liquidação do contrato. A vaga exibe o valor líquido com transparência ao influenciador.</li>
+          <li><strong>RN-002 (Retenção em Custódia - Escrow):</strong> O valor bruto é bloqueado no gateway antes do início da gravação. A liberação só ocorre mediante homologação formal do contratante ou aprovação tácita após decurso de prazo.</li>
+          <li><strong>RN-003 (Política de Cancelamento e Reembolso em Disputa):</strong> Estorno de 100% antes da execução ou mediação humana pelo suporte técnico em até 7 dias úteis.</li>
+          <li><strong>RN-004 (Consentimento LGPD e Cessão de Imagem):</strong> Cláusula indelével de transferência de direitos de exibição e proteção de dados bancários/pessoais.</li>
+          <li><strong>RN-005 (Diretrizes de Portfólio):</strong> Limite rígido de 5 vídeos de alta resolução com validação de links sociais.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: NOVA CAMPANHA (RF-004) -->
+  <div class="modal-overlay" id="modalNewCampaign">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Publicar Nova Vaga de Campanha (RF-004)</h3>
+        <button class="modal-close" onclick="closeModal('modalNewCampaign')">&times;</button>
+      </div>
+      <form id="formNewCampaign">
+        <div class="form-group">
+          <label>Título da Campanha</label>
+          <input type="text" id="campaignTitleInput" class="form-control" required placeholder="Ex: Lançamento de Smartphone 5G">
+        </div>
+        <div class="form-group">
+          <label>Nicho de Atuação</label>
+          <select id="campaignNicheInput" class="form-control" required>
+            <option value="Tecnologia / Hardware">Tecnologia / Hardware</option>
+            <option value="Games & Lifestyle">Games & Lifestyle</option>
+            <option value="Moda & Beleza">Moda & Beleza</option>
+            <option value="Finanças & Negócios">Finanças & Negócios</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Orçamento Bruto (R$)</label>
+          <input type="number" step="0.01" id="campaignBudgetInput" class="form-control" required placeholder="Ex: 3000.00">
+          <small id="campaignBudgetCalc" style="color: var(--text-muted); font-size: 0.8rem; display: block; margin-top: 0.25rem;">
+            Taxa da plataforma (12,5% - RN-001): R$ 0,00 | Valor líquido para o criador: R$ 0,00
+          </small>
+        </div>
+        <div class="form-group">
+          <label>Prazo Estimado de Entrega</label>
+          <input type="date" id="campaignDeadlineInput" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Briefing & Descrição da Vaga</label>
+          <textarea id="campaignDescInput" class="form-control" rows="3" required placeholder="Detalhes do que deve ser gravado e entregue..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Requisitos Mínimos (Seguidores, Canal, Formato)</label>
+          <textarea id="campaignReqInput" class="form-control" rows="2" placeholder="Ex: Mínimo 20k seguidores, resolução 4K..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modalNewCampaign')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Publicar Vaga</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CANDIDATURA / PROPOSTA (RF-005, RN-001) -->
+  <div class="modal-overlay" id="modalApply">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Enviar Candidatura / Proposta (RF-005)</h3>
+        <button class="modal-close" onclick="closeModal('modalApply')">&times;</button>
+      </div>
+      <form id="formApply">
+        <input type="hidden" id="applyCampaignId">
+        <div class="form-group">
+          <label>Campanha Selecionada</label>
+          <input type="text" id="applyCampaignTitle" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+          <label>Valor da Proposta Bruta (R$)</label>
+          <input type="number" step="0.01" id="applyGrossAmount" class="form-control" required>
+          <div style="background: #f1f5f9; padding: 0.75rem; border-radius: 6px; margin-top: 0.5rem; font-size: 0.85rem;">
+            <div>Comissão da Plataforma (12,5% - RN-001): <strong id="applyFeeCalc" style="color: #b91c1c;">R$ 0,00</strong></div>
+            <div>Valor Líquido Creditado a Você: <strong id="applyNetCalc" style="color: #15803d;">R$ 0,00</strong></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Pitch / Mensagem de Apresentação</label>
+          <textarea id="applyPitchInput" class="form-control" rows="3" required placeholder="Explique por que seu perfil é ideal para esta campanha..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modalApply')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Enviar Proposta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ASSINATURA CONTRATUAL DIGITAL (RF-007, RN-004) -->
+  <div class="modal-overlay" id="modalSignContract">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Assinatura do Contrato Digital (RF-007)</h3>
+        <button class="modal-close" onclick="closeModal('modalSignContract')">&times;</button>
+      </div>
+      <div class="legal-box" id="modalSignContractText">
+        <!-- Termos legais e escopo -->
+      </div>
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+          <input type="checkbox" id="checkLgpdConsent" required>
+          <span>Declaro ciência e concordo com os <strong>Termos de Cessão de Direitos de Imagem e Diretrizes de Privacidade da LGPD (RN-004)</strong>.</span>
+        </label>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalSignContract')">Fechar</button>
+        <button type="button" id="btnConfirmSign" class="btn btn-success">✍️ Assinar Digitalmente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: APORTE EM CUSTÓDIA ESCROW (RF-008, RN-002) -->
+  <div class="modal-overlay" id="modalEscrowPayment">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Aporte Financeiro em Custódia - Escrow (RF-008)</h3>
+        <button class="modal-close" onclick="closeModal('modalEscrowPayment')">&times;</button>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+        O valor integral da campanha será retido com segurança pela plataforma. O repasse ao criador ocorrerá apenas após sua aprovação do material entregue (RN-002).
+      </p>
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 1rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span>Valor Bruto do Contrato:</span>
+          <strong id="escrowGrossDisplay" style="font-size: 1.1rem; color: #1e3a8a;">R$ 0,00</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #475569;">
+          <span>Taxa de Intermediação (12,5%):</span>
+          <span id="escrowFeeDisplay">R$ 0,00</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Forma de Pagamento (Gateway Simulado PCI-DSS)</label>
+        <select id="escrowMethodSelect" class="form-control">
+          <option value="PIX Instantâneo">PIX Instantâneo (Confirmação Imediata)</option>
+          <option value="Cartão de Crédito Corporativo">Cartão de Crédito Corporativo</option>
+        </select>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modalEscrowPayment')">Cancelar</button>
+        <button type="button" id="btnConfirmEscrow" class="btn btn-primary">🔒 Confirmar Bloqueio em Escrow</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: SUBMETER ENTREGA (RF-009) -->
+  <div class="modal-overlay" id="modalDeliver">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Submeter Conteúdo para Homologação (RF-009)</h3>
+        <button class="modal-close" onclick="closeModal('modalDeliver')">&times;</button>
+      </div>
+      <form id="formDeliver">
+        <input type="hidden" id="deliverContractId">
+        <div class="form-group">
+          <label>Título do Material Entregue</label>
+          <input type="text" id="deliverTitleInput" class="form-control" required placeholder="Ex: Vídeo Reels - Prévia Final em 4K">
+        </div>
+        <div class="form-group">
+          <label>Link / URL da Mídia (Vídeo / Google Drive / Instagram)</label>
+          <input type="url" id="deliverUrlInput" class="form-control" required placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Observações e Comprovantes</label>
+          <textarea id="deliverNotesInput" class="form-control" rows="3" placeholder="Informações adicionais para a empresa avaliar..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modalDeliver')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Enviar para Aprovação</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: AVALIAÇÃO MÚTUA (RF-010) -->
+  <div class="modal-overlay" id="modalReview">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Avaliação Bilateral de Reputação (RF-010)</h3>
+        <button class="modal-close" onclick="closeModal('modalReview')">&times;</button>
+      </div>
+      <form id="formReview">
+        <input type="hidden" id="reviewContractId">
+        <input type="hidden" id="reviewTargetId">
+        <div class="form-group">
+          <label>Nota (1 a 5 Estrelas)</label>
+          <select id="reviewRatingInput" class="form-control">
+            <option value="5">⭐⭐⭐⭐⭐ 5 Estrelas (Excelente)</option>
+            <option value="4">⭐⭐⭐⭐ 4 Estrelas (Muito Bom)</option>
+            <option value="3">⭐⭐⭐ 3 Estrelas (Regular)</option>
+            <option value="2">⭐⭐ 2 Estrelas (Ruim)</option>
+            <option value="1">⭐ 1 Estrela (Péssimo)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Comentário da Avaliação</label>
+          <textarea id="reviewCommentInput" class="form-control" rows="3" required placeholder="Descreva sua experiência de trabalho..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modalReview')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Publicar Avaliação</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ABERTURA DE DISPUTA (RF-012, RN-003) -->
+  <div class="modal-overlay" id="modalDispute">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Abrir Chamado de Disputa Contratual (RF-012)</h3>
+        <button class="modal-close" onclick="closeModal('modalDispute')">&times;</button>
+      </div>
+      <p style="font-size: 0.85rem; color: #b91c1c; margin-bottom: 1rem;">
+        Atenção: Ao abrir uma disputa, os valores em custódia são congelados e o caso é submetido à mediação humana pelo Suporte Técnico (prazo: até 7 dias úteis - RN-003).
+      </p>
+      <form id="formDispute">
+        <input type="hidden" id="disputeContractId">
+        <div class="form-group">
+          <label>Motivo da Disputa</label>
+          <select id="disputeReasonInput" class="form-control">
+            <option value="Descumprimento de Briefing">Descumprimento de Briefing / Qualidade Insuficiente</option>
+            <option value="Atraso Injustificado">Atraso Injustificado de Entrega</option>
+            <option value="Desistência Unilateral">Desistência Unilateral</option>
+            <option value="Outro Motivo">Outro Motivo Contratual</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Descrição Detalhada do Ocorrido</label>
+          <textarea id="disputeDescInput" class="form-control" rows="3" required placeholder="Apresente os fatos e evidências para análise do suporte..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modalDispute')">Cancelar</button>
+          <button type="submit" class="btn btn-danger">🚨 Abrir Disputa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Container de Toasts -->
+  <div id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer>
+    <p><strong>Universidade Estadual de Maringá (UEM)</strong> • Departamento de Informática • Análise de Sistemas de Software (ASS)</p>
+    <p>Autores: Vitor Teodoro Correa (RA 143757) & Arthur Spirandelli (RA 144136)</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

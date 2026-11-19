@@ -1,0 +1,91 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam handwritten false
+skinparam defaultFontName Arial
+skinparam roundCorner 10
+
+skinparam actor {
+    BackgroundColor #EFF6FF
+    BorderColor #2563EB
+}
+
+skinparam usecase {
+    BackgroundColor #F8FAFC
+    BorderColor #1E40AF
+    ArrowColor #334155
+}
+
+skinparam package {
+    BackgroundColor #FAFAFA
+    BorderColor #94A3B8
+}
+
+left to right direction
+
+actor "Jogador" as Jogador
+actor "Parceiro de Dupla\n(Modo 2v2)" as Parceiro
+actor "Motor de Regras\n(Juiz Virtual)" as Motor
+actor "Auditor /\nModerador" as Auditor
+actor "<<external>>\nCSPRNG (Random)" as CSPRNG
+
+rectangle "Motor & Plataforma do Jogo de Truco Brasileiro" {
+
+    package "Gestão da Mesa e Partida" {
+        usecase "UC-001: Criar e Configurar\nPartida de Truco" as UC01
+        usecase "UC-011: Consultar Histórico\ne Log da Mesa" as UC11
+    }
+
+    package "Mecânica de Rodadas e Cartas" {
+        usecase "UC-002: Iniciar Rodada e\nDistribuir Cartas (RN-003)" as UC02
+        usecase "UC-003: Jogar Carta Aberta\nna Vaza (RN-006)" as UC03
+        usecase "UC-004: Jogar Carta Encoberta\n(Blefe - RN-009)" as UC04
+        usecase "UC-007: Apurar Vencedor da Vaza\ne Arbitrar Canga (RN-008)" as UC07
+    }
+
+    package "Sistema de Apostas e Desafios" {
+        usecase "UC-005: Solicitar Aumento de Aposta\n(Truco/Seis/Nove/Doze - RN-010)" as UC05
+        usecase "UC-006: Responder a Pedido de Aposta\n(Aceitar/Correr/Retrucar - RN-011)" as UC06
+    }
+
+    package "Situações Especiais e Encerramento" {
+        usecase "UC-008: Processar Decisão\nna Mão de 11 (RN-012)" as UC08
+        usecase "UC-009: Conduzir Mão de Ferro\n(11 a 11 às Cegas - RN-013)" as UC09
+        usecase "UC-010: Atualizar Placar e\nDeclarar Campeão (RN-014)" as UC10
+        usecase "UC-012: Enviar Sinais Secretos\ne Expressões (RN-016)" as UC12
+    }
+}
+
+' Relacionamentos do Jogador
+Jogador --> UC01
+Jogador --> UC03
+Jogador --> UC04
+Jogador --> UC05
+Jogador --> UC06
+Jogador --> UC08
+Jogador --> UC11
+Jogador --> UC12
+
+' Relacionamentos do Parceiro
+Parceiro --> UC06
+Parceiro --> UC08
+Parceiro --> UC12
+
+' Relacionamentos do Motor de Regras
+Motor --> UC02
+Motor --> UC07
+Motor --> UC09
+Motor --> UC10
+
+' Relacionamentos Externos e de Auditoria
+UC02 --> CSPRNG
+Auditor --> UC11
+
+' Extensões e Inclusões
+UC03 ..> UC07 : <<trigger>>
+UC04 ..> UC07 : <<trigger>>
+UC05 <.. UC06 : <<precedes>>
+UC02 <.. UC08 : <<extend>>
+UC02 <.. UC09 : <<extend>>
+UC07 ..> UC10 : <<trigger>>
+
+@enduml

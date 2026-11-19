@@ -1,74 +1,65 @@
-# Plataforma de Conexão entre Empresas e Influenciadores / Criadores de Conteúdo
+# TrabalhoASS — Análise de Sistemas de Software
 
 **Disciplina:** ANÁLISE DE SISTEMAS DE SOFTWARE  
 **Instituição:** Universidade Estadual de Maringá (UEM)  
-**Repositório:** [TrabalhoASS](https://github.com/vitxt/TrabalhoASS)  
+**Integrantes do Grupo:**  
+- **Vitor Teodoro Correa** — RA 143757  
+- **Arthur Spirandelli** — RA 144136  
 
 ---
 
-## Integrantes do Grupo
+## Estrutura do Repositório: Ambientes de Trabalho (Work-Envs)
 
-* **Vitor Teodoro Correa** — RA 143757
-* **Arthur Spirandelli** — RA 144136
+O repositório foi organizado em **dois ambientes de trabalho independentes**, cada um estruturado com rigorosa documentação de engenharia de software e implementações:
 
----
-
-## Objetivo do Projeto
-
-O projeto consiste na concepção, especificação de requisitos e modelagem orientada a objetos de uma **plataforma digital marketplace** destinada a conectar empresas anunciantes (**Contratantes**) a criadores de conteúdo e influenciadores digitais (**Contratados**).
-
-A plataforma intermedia todo o ciclo de contratação de campanhas publicitárias:
-1. Publicação de vagas e busca ativa de perfis por nicho.
-2. Candidatura e envio de propostas com transparência de valores líquidos.
-3. Formalização contratual digital com cessão expressa de direitos de imagem (LGPD).
-4. Retenção preventiva de pagamento em garantia (*escrow*) via gateway de pagamentos.
-5. Entrega, pré-visualização e homologação de conteúdo antes do repasse financeiro.
-6. Liquidação com desconto da taxa de comissão da plataforma (12,5%).
-7. Mediação humana de disputas pelo suporte técnico e avaliação bilateral de reputação.
-
----
-
-## Estrutura da Documentação e Artefatos
-
-Todos os documentos de engenharia de software foram elaborados com fontes editáveis em Markdown/PlantUML e exportados para PDF e imagens de alta resolução na pasta [docs/](docs/):
-
-| Artefato | Descrição | Fonte Editável | Arquivo Final (PDF / Imagem) |
-|---|---|:---:|:---:|
-| **Regras de Negócio** | Diretrizes financeiras (12,5%), retenção *escrow*, política de cancelamento, LGPD e limite de vídeos no portfólio | [regras-negocio.md](docs/regras-negocio.md) | [regras-negocio.pdf](docs/regras-negocio.pdf) |
-| **Requisitos de Software** | Requisitos Funcionais (RF-001 a RF-012), Não Funcionais (RNF-001 a RNF-005), outros requisitos, restrições e rastreabilidade | [requisitos.md](docs/requisitos.md) | [requisitos.pdf](docs/requisitos.pdf) |
-| **Casos de Uso** | Especificação detalhada dos fluxos principais, alternativos, exceções, pré e pós-condições (UC-001 a UC-012) | [casos-de-uso.md](docs/casos-de-uso.md) | [casos-de-uso.pdf](docs/casos-de-uso.pdf) |
-| **Diagrama de Casos de Uso** | Diagrama UML com limite do sistema, atores e casos de uso | [diagrama-casos-de-uso.puml](docs/diagrama-casos-de-uso.puml) | [PNG](docs/diagrama-casos-de-uso.png) \| [PDF](docs/diagrama-casos-de-uso.pdf) |
-| **Diagrama de Sequência** | Cenário representativo de contratação, aporte *escrow*, entrega, aprovação, aprovação tácita e mediação | [diagrama-sequencia.puml](docs/diagrama-sequencia.puml) | [PNG](docs/diagrama-sequencia.png) \| [PDF](docs/diagrama-sequencia.pdf) |
+```
+ass/
+├── plataforma-influenciadores/    # AMBIENTE 1: SaaS Marketplace de Influenciadores
+│   ├── docs/                      # Regras de Negócio, Requisitos, Casos de Uso, UML (MD, PDF, PNG)
+│   ├── tools/                     # Scripts de compilação (md2pdf, puml2png)
+│   ├── backend/                   # Instância Backend (API REST Node.js/Express + SQLite)
+│   ├── frontend/                  # Instância Frontend (SPA Web Moderna e Responsiva)
+│   └── README.md                  # Especificação e guia de execução do SaaS
+│
+└── jogo-truco/                    # AMBIENTE 2: Engenharia do Jogo Tradicional de Truco
+    ├── docs/                      # Regras de Negócio, Requisitos, Casos de Uso, UML (MD, PDF, PNG)
+    ├── tools/                     # Scripts de compilação automatizada
+    ├── engine/                    # Motor de Regras Executável em Python + Bateria de Testes
+    └── README.md                  # Especificação das regras do Truco Paulista & Mineiro
+```
 
 ---
 
-## Visão Geral dos Diagramas UML
+## Ambiente 1: `plataforma-influenciadores/`
+Plataforma SaaS que conecta empresas anunciantes a influenciadores digitais, intermediando o ciclo de contratação, formalização de acordos com termos LGPD (**RN-004**), garantia financeira sob custódia *escrow* (**RN-002**), comissão de intermediação de 12,5% (**RN-001**) e mediação de disputas (**RN-003**).
 
-### Diagrama de Casos de Uso
-O diagrama modela os limites da plataforma, relacionando os atores (**Contratado**, **Contratante**, **Suporte Técnico** e **Gateway de Pagamentos**) aos casos de uso centrais (`UC-001` a `UC-012`), detalhando relações de extensão e inclusão.
-* Visualizar fonte: [docs/diagrama-casos-de-uso.puml](docs/diagrama-casos-de-uso.puml)
-* Visualizar imagem: [docs/diagrama-casos-de-uso.png](docs/diagrama-casos-de-uso.png)
-
-### Diagrama de Sequência
-Representa temporalmente o ciclo operacional completo de uma campanha publicitária:
-1. Formalização e assinatura digital do contrato (RF-007, RN-004).
-2. Cobrança e bloqueio de fundos em custódia *escrow* via gateway (RF-008, RN-002).
-3. Produção e entrega do material pelo influenciador (RF-009).
-4. Homologação através de três cenários:
-   * **Cenário Principal:** Aprovação expressa pelo contratante com repasse líquido e recolhimento de comissão (12,5%) (RF-011, RN-001).
-   * **Cenário Alternativo 1:** Aprovação tácita automática por decurso de prazo regulamentar de 5 dias úteis (RN-002).
-   * **Cenário Alternativo 2:** Recusa com instauração de disputa e arbitragem do suporte em até 7 dias corridos (RF-012, RN-003).
-* Visualizar fonte: [docs/diagrama-sequencia.puml](docs/diagrama-sequencia.puml)
-* Visualizar imagem: [docs/diagrama-sequencia.png](docs/diagrama-sequencia.png)
+* **Documentos:** [docs/](plataforma-influenciadores/docs/) com PDFs e diagramas UML de Casos de Uso e Sequência.
+* **Backend:** API RESTful com autenticação, campanhas, propostas, contratos, custódia e disputas.
+* **Frontend:** Interface SPA moderna servida na porta 4000.
+* **Execução Rápida:**
+  ```bash
+  cd plataforma-influenciadores/backend
+  npm install && npm run seed && npm start
+  # Acesse http://localhost:4000
+  ```
 
 ---
 
-## Matriz Resumida de Rastreabilidade
+## Ambiente 2: `jogo-truco/`
+Engenharia formal de software do tradicional jogo de cartas **Truco Brasileiro**, cobrindo com rigor matemático as variantes **Truco Paulista** (manilhas dinâmicas por Vira) e **Truco Mineiro** (manilhas fixas), nas modalidades 1v1 e 2v2 em duplas.
 
-| Regra de Negócio (RN) | Requisitos Funcionais | Requisitos Não Funcionais | Casos de Uso |
-|---|---|---|---|
-| **RN-001** (Comissão de 12,5%) | RF-004, RF-008, RF-011 | RNF-002 | UC-004, UC-008, UC-011 |
-| **RN-002** (Pagamento Escrow e Aprovação) | RF-007, RF-008, RF-009, RF-011 | RNF-002, RNF-004 | UC-007, UC-008, UC-009, UC-011 |
-| **RN-003** (Reembolso e Disputas) | RF-012 | RNF-001 | UC-012 |
-| **RN-004** (LGPD e Direitos de Imagem) | RF-001, RF-003, RF-007 | RNF-001, RNF-002 | UC-001, UC-003, UC-007 |
-| **RN-005** (Limite de Vídeos no Portfólio) | RF-002 | RNF-003, RNF-005 | UC-002 |
+* **Documentos e Artefatos (PT-BR):**
+  - **Regras de Negócio (RN-001 a RN-016):** Manilhas, naipes, baralho limpo, canga/empate, blefe encoberto, escalonamento (Truco, Seis, Nove, Doze), Mão de 11 e Mão de Ferro.
+  - **Especificação de Requisitos (SRS):** Requisitos Funcionais (RF-001 a RF-015), Não Funcionais (RNF-001 a RNF-006) e Matriz de Rastreabilidade.
+  - **Casos de Uso (UC-001 a UC-012):** Fluxos detalhados, alternativos e exceções.
+  - **Diagramas UML:** Casos de Uso e Sequência temporal completa em PlantUML, PNG e PDF.
+* **Motor Executável & Testes:**
+  ```bash
+  cd jogo-truco/engine
+  python3 test_truco.py
+  ```
+* **Compilação de Documentos:**
+  ```bash
+  cd jogo-truco/tools
+  python3 build_all_docs.py
+  ```

@@ -1,0 +1,9 @@
+{
+  "name": "influencer-platform-frontend",
+  "version": "1.0.0",
+  "description": "Frontend da Plataforma de Conexão entre Empresas e Influenciadores",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 ."
+  }
+}

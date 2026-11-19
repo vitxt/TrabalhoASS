@@ -1,0 +1,110 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+skinparam roundCorner 10
+
+skinparam sequence {
+    ArrowColor #2563EB
+    ActorBorderColor #2563EB
+    ActorBackgroundColor #EFF6FF
+    LifeLineBorderColor #64748B
+    LifeLineBackgroundColor #F1F5F9
+    ParticipantBorderColor #1E40AF
+    ParticipantBackgroundColor #F8FAFC
+}
+
+autonumber
+
+actor "Jogador 1\n(Equipe A - Mão)" as J1
+actor "Jogador 2\n(Equipe B - Pé)" as J2
+participant "Motor de Regras\n(Juiz Virtual)" as Motor
+participant "CSPRNG\n(Cripto Random)" as Random
+participant "Interface da Mesa\n(WebSockets)" as Mesa
+
+== 1. Distribuição de Cartas e Definição da Vira (RF-003, RF-004, RN-003, RN-004) ==
+
+Motor -> Motor: Rotacionar posições ("Mão" e "Pé" em sentido horário)
+Motor -> Random: Solicitar sementes de entropia para embaralhamento
+activate Random
+Random --> Motor: Sementes pseudoaleatórias criptográficas
+deactivate Random
+
+Motor -> Motor: Embaralhar 40 cartas (Fisher-Yates) e simular corte
+Motor -> J1: Entregar 3 cartas privadas criptografadas (payload seguro)
+Motor -> J2: Entregar 3 cartas privadas criptografadas (payload seguro)
+
+Motor -> Mesa: Revelar Carta Vira no centro da mesa (Ex: Vira = 7)
+activate Mesa
+Mesa --> J1: Notificar Vira e destacar Manilhas da rodada (Damas Q)
+Mesa --> J2: Notificar Vira e destacar Manilhas da rodada (Damas Q)
+deactivate Mesa
+
+Motor -> Mesa: Iniciar temporizador da 1ª vaza para o Jogador 1 ("Mão")
+
+== 2. Disputa da 1ª Vaza (RF-005, RF-007, RN-006, RN-007) ==
+
+J1 -> Mesa: Descartar carta aberta (Ex: 3 de Paus)
+activate Mesa
+Mesa -> Motor: Registrar descarte da carta de J1
+deactivate Mesa
+
+Motor -> Mesa: Conceder turno da 1ª vaza para Jogador 2
+J2 -> Mesa: Descartar carta aberta (Ex: Dama de Espadas - Espadilha Manilha)
+activate Mesa
+Mesa -> Motor: Registrar descarte da carta de J2
+deactivate Mesa
+
+Motor -> Motor: Comparar pesos (Espadilha Manilha > 3 de Paus comum)
+Motor -> Mesa: Anunciar vitória de J2 na 1ª vaza (Equipe B: 1 x 0)
+Motor -> Motor: Atribuir saída da 2ª vaza a J2 ("Vencedor torna")
+
+== 3. Disputa da 2ª Vaza e Desafio de Truco (RF-008, RF-009, RN-010, RN-011) ==
+
+J2 -> Mesa: Descartar carta aberta (Ex: Ás de Copas comum)
+activate Mesa
+Mesa -> Motor: Registrar descarte de J2 na 2ª vaza
+deactivate Mesa
+
+Motor -> Mesa: Conceder turno para Jogador 1
+J1 -> Mesa: Solicitar aumento de aposta: "TRUUUCO!" (Vale 3 pontos)
+activate Mesa
+Mesa -> Motor: Registrar solicitação de Truco (RF-008, RN-010)
+deactivate Mesa
+
+Motor -> Motor: Congelar descartes e transferir decisão para Equipe B
+Motor -> Mesa: Disparar animação/som "TRUCO!" e abrir painel de resposta
+
+J2 -> Mesa: Responder com "ACEITAR" ("Cai pra dentro!")
+activate Mesa
+Mesa -> Motor: Registrar aceite do Truco (Aposta = 3 tentos)
+deactivate Mesa
+
+Motor -> Mesa: Atualizar aposta oficial para 3 tentos e liberar jogada de J1
+J1 -> Mesa: Jogar carta encoberta (Blefe na 2ª vaza - RF-006, RN-009)
+activate Mesa
+Mesa -> Motor: Registrar descarte com peso zero
+deactivate Mesa
+
+Motor -> Motor: Comparar pesos (Ás de Copas > Carta Encoberta)
+Motor -> Mesa: Anunciar vitória de J2 na 2ª vaza (Equipe B: 2 x 0)
+
+== 4. Conclusão da Rodada e Pontuação da Partida (RF-010, RF-013, RN-007, RN-014) ==
+
+Motor -> Motor: Verificar condição de vitória da rodada (Equipe B venceu 2 vazas)
+Motor -> Motor: Somar 3 tentos da aposta ao placar da Equipe B
+Motor -> Mesa: Atualizar placar oficial da partida (Equipe B +3 pontos)
+activate Mesa
+Mesa --> J1: Notificar término da rodada e novo placar
+Mesa --> J2: Notificar término da rodada e novo placar
+deactivate Mesa
+
+alt Placar >= 12 pontos
+    Motor -> Mesa: Declarar Equipe B Campeã da Partida (RF-013, RN-014)
+    Motor -> Motor: Gravar log de auditoria e estatísticas (RF-015)
+else Placar < 12 pontos
+    Motor -> Motor: Verificar gatilhos de Mão de 11 (RN-012) ou Mão de Ferro (RN-013)
+    Motor -> Motor: Iniciar próxima rodada com rotação de papéis
+end
+
+@enduml

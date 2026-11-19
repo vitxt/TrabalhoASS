@@ -1,0 +1,11 @@
+{
+  "name": "plataforma-influenciadores-workspace",
+  "version": "1.0.0",
+  "description": "Plataforma de Conexão entre Empresas e Influenciadores - Monorepo Frontend & Backend",
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "seed": "node backend/src/seed.js",
+    "dev:backend": "cd backend && npm start",
+    "dev:frontend": "cd frontend && npm start"
+  }
+}

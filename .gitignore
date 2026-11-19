@@ -1,8 +1,22 @@
-# Ignorar tudo por padrao
-/*
+# Dependencias e builds
+node_modules/
+dist/
+build/
+.env
+.env.local
+*.log
 
-# Permitir apenas README.md e o diretorio docs
-!/README.md
-!/docs/
-!/docs/**
-!.gitignore
+# Python
+__pycache__/
+*.pyc
+.venv/
+env/
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+tools/
